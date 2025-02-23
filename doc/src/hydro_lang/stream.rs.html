@@ -2271,7 +2271,13 @@
 <a href="#2270" id="2270">2270</a>
 <a href="#2271" id="2271">2271</a>
 <a href="#2272" id="2272">2272</a>
-<a href="#2273" id="2273">2273</a></pre></div><pre class="rust"><code><span class="kw">use </span>std::cell::RefCell;
+<a href="#2273" id="2273">2273</a>
+<a href="#2274" id="2274">2274</a>
+<a href="#2275" id="2275">2275</a>
+<a href="#2276" id="2276">2276</a>
+<a href="#2277" id="2277">2277</a>
+<a href="#2278" id="2278">2278</a>
+<a href="#2279" id="2279">2279</a></pre></div><pre class="rust"><code><span class="kw">use </span>std::cell::RefCell;
 <span class="kw">use </span>std::future::Future;
 <span class="kw">use </span>std::hash::Hash;
 <span class="kw">use </span>std::marker::PhantomData;
@@ -2416,6 +2422,7 @@
                 ident,
                 location_kind: <span class="self">self</span>.location_kind(),
                 input: Box::new(<span class="self">self</span>.ir_node.into_inner()),
+                metadata: <span class="self">self</span>.location.new_node_metadata::&lt;T&gt;(),
             });
     }
 }
@@ -2463,8 +2470,9 @@
                 location_kind: <span class="self">self</span>.location_kind(),
                 input: Box::new(HydroNode::Unpersist {
                     inner: Box::new(<span class="self">self</span>.ir_node.into_inner()),
-                    metadata,
+                    metadata: metadata.clone(),
                 }),
+                metadata,
             });
     }
 }
@@ -3853,8 +3861,7 @@
     /// # use std::collections::HashSet;
     /// # use dfir_rs::futures::StreamExt;
     /// # use hydro_lang::*;
-    /// # tokio_test::block_on(test_util::stream_transform_test(
-    ///     |process| {
+    /// # tokio_test::block_on(test_util::stream_transform_test(|process| {
     ///         let tick = process.tick();
     ///         process.source_iter(q!([2, 3, 1, 9, 6, 5, 4, 7, 8]))
     ///             .map(q!(|x| async move {
@@ -3863,13 +3870,14 @@
     ///                 x
     ///             }))
     ///             .poll_futures()
-    ///     },
-    ///     |mut stream| async move {
-    ///         assert_eq!(
-    ///             HashSet::&lt;i32&gt;::from_iter(1..10),
-    ///             HashSet::from_iter(vec![stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap()])
-    ///         );
-    ///     },
+    ///         // 1, 2, 3, 4, 5, 6, 7, 8, 9
+    /// #   },
+    /// #   |mut stream| async move {
+    /// #       assert_eq!(
+    /// #           HashSet::&lt;i32&gt;::from_iter(1..10),
+    /// #           HashSet::from_iter(vec![stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap()])
+    /// #       );
+    /// #   },
     /// # ));
     </span><span class="kw">pub fn </span>poll_futures&lt;T2&gt;(<span class="self">self</span>) -&gt; Stream&lt;T2, L, B, NoOrder&gt;
     <span class="kw">where
@@ -3892,8 +3900,7 @@
     /// # use std::collections::HashSet;
     /// # use dfir_rs::futures::StreamExt;
     /// # use hydro_lang::*;
-    /// # tokio_test::block_on(test_util::stream_transform_test(
-    ///     |process| {
+    /// # tokio_test::block_on(test_util::stream_transform_test(|process| {
     ///         let tick = process.tick();
     ///         process.source_iter(q!([2, 3, 1, 9, 6, 5, 4, 7, 8]))
     ///             .map(q!(|x| async move {
@@ -3902,13 +3909,14 @@
     ///                 x
     ///             }))
     ///             .poll_futures_ordered()
-    ///     },
-    ///     |mut stream| async move {
-    ///         assert_eq!(
-    ///             vec![2, 3, 1, 9, 6, 5, 4, 7, 8],
-    ///             vec![stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap()]
-    ///         );
-    ///     },
+    ///             // 2, 3, 1, 9, 6, 5, 4, 7, 8
+    /// #   },
+    /// #   |mut stream| async move {
+    /// #       assert_eq!(
+    /// #           vec![2, 3, 1, 9, 6, 5, 4, 7, 8],
+    /// #           vec![stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap()]
+    /// #       );
+    /// #   },
     /// # ));
     </span><span class="kw">pub fn </span>poll_futures_ordered&lt;T2&gt;(<span class="self">self</span>) -&gt; Stream&lt;T2, L, B, Order&gt;
     <span class="kw">where
@@ -4044,9 +4052,10 @@
             .push(HydroLeaf::ForEach {
                 input: Box::new(HydroNode::Unpersist {
                     inner: Box::new(<span class="self">self</span>.ir_node.into_inner()),
-                    metadata,
+                    metadata: metadata.clone(),
                 }),
                 f,
+                metadata,
             });
     }
 
@@ -4063,6 +4072,7 @@
             .push(HydroLeaf::DestSink {
                 sink: sink.splice_typed_ctx(<span class="kw-2">&amp;</span><span class="self">self</span>.location).into(),
                 input: Box::new(<span class="self">self</span>.ir_node.into_inner()),
+                metadata: <span class="self">self</span>.location.new_node_metadata::&lt;T&gt;(),
             });
     }
 }
@@ -4230,8 +4240,9 @@
                 instantiate_fn: DebugInstantiate::Building(),
                 deserialize_fn: <span class="prelude-val">None</span>,
                 input: Box::new(<span class="self">self</span>.ir_node.into_inner()),
-                metadata,
+                metadata: metadata.clone(),
             }),
+            metadata,
         });
 
         ExternalBincodeStream {
@@ -4295,8 +4306,9 @@
                 instantiate_fn: DebugInstantiate::Building(),
                 deserialize_fn: <span class="prelude-val">None</span>,
                 input: Box::new(<span class="self">self</span>.ir_node.into_inner()),
-                metadata,
+                metadata: metadata.clone(),
             }),
+            metadata,
         });
 
         ExternalBytesPort {
