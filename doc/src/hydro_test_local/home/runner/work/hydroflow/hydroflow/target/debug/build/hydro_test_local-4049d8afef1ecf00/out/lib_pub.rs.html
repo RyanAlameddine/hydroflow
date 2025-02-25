@@ -1488,7 +1488,7 @@
                         <span class="kw">await</span>; x }
                     ),
                 )
-                .poll_futures()
+                .resolve_futures()
                 .for_each(<span class="macro">q!</span>(| x | output.send(x).unwrap()));
             flow.compile_no_network::&lt;SingleProcessGraph&gt;()
         }
@@ -1506,7 +1506,7 @@
                         <span class="kw">await</span>; x }
                     ),
                 )
-                .poll_futures_ordered()
+                .resolve_futures_ordered()
                 .for_each(<span class="macro">q!</span>(| x | output.send(x).unwrap()));
             flow.compile_no_network::&lt;SingleProcessGraph&gt;()
         }
@@ -2104,7 +2104,7 @@
                         <span class="kw">await</span>; x }
                     ),
                 )
-                .poll_futures()
+                .resolve_futures()
                 .for_each(<span class="macro">q!</span>(| x | output.send(x).unwrap()));
             flow.compile_no_network::&lt;SingleProcessGraph&gt;()
         }
@@ -2122,7 +2122,7 @@
                         <span class="kw">await</span>; x }
                     ),
                 )
-                .poll_futures_ordered()
+                .resolve_futures_ordered()
                 .for_each(<span class="macro">q!</span>(| x | output.send(x).unwrap()));
             flow.compile_no_network::&lt;SingleProcessGraph&gt;()
         }

@@ -9919,7 +9919,17 @@
 <a href="#9918" id="9918">9918</a>
 <a href="#9919" id="9919">9919</a>
 <a href="#9920" id="9920">9920</a>
-<a href="#9921" id="9921">9921</a></pre></div><pre class="rust"><code><span class="kw">pub use </span>dfir_rs;
+<a href="#9921" id="9921">9921</a>
+<a href="#9922" id="9922">9922</a>
+<a href="#9923" id="9923">9923</a>
+<a href="#9924" id="9924">9924</a>
+<a href="#9925" id="9925">9925</a>
+<a href="#9926" id="9926">9926</a>
+<a href="#9927" id="9927">9927</a>
+<a href="#9928" id="9928">9928</a>
+<a href="#9929" id="9929">9929</a>
+<a href="#9930" id="9930">9930</a>
+<a href="#9931" id="9931">9931</a></pre></div><pre class="rust"><code><span class="kw">pub use </span>dfir_rs;
 <span class="kw">pub use </span>stageleft::q;
 <span class="attr">#[doc(hidden)]
 </span><span class="kw">pub mod </span>runtime_support {
@@ -11537,30 +11547,34 @@
         /// # use dfir_rs::futures::StreamExt;
         /// # use hydro_lang::*;
         /// # tokio_test::block_on(test_util::stream_transform_test(|process| {
-        ///         let tick = process.tick();
-        ///         process.source_iter(q!([2, 3, 1, 9, 6, 5, 4, 7, 8]))
-        ///             .map(q!(|x| async move {
-        ///                 // tokio::time::sleep works, import then just sleep does not, unsure why
-        ///                 tokio::time::sleep(tokio::time::Duration::from_millis(10)).await;
-        ///                 x
-        ///             }))
-        ///             .poll_futures()
-        ///         // 1, 2, 3, 4, 5, 6, 7, 8, 9
+        /// let tick = process.tick();
+        /// process.source_iter(q!([2, 3, 1, 9, 6, 5, 4, 7, 8]))
+        ///     .map(q!(|x| async move {
+        ///         // tokio::time::sleep works, import then just sleep does not, unsure why
+        ///         tokio::time::sleep(tokio::time::Duration::from_millis(10)).await;
+        ///         x
+        ///     }))
+        ///     .resolve_futures()
         /// #   },
         /// #   |mut stream| async move {
+        /// // 1, 2, 3, 4, 5, 6, 7, 8, 9
+        /// #       let mut output = HashSet::new();
+        /// #       for _ in 1..10 {
+        /// #           output.insert(stream.next().await.unwrap());
+        /// #       }
         /// #       assert_eq!(
-        /// #           HashSet::&lt;i32&gt;::from_iter(1..10),
-        /// #           HashSet::from_iter(vec![stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap()])
+        /// #           output,
+        /// #           HashSet::&lt;i32&gt;::from_iter(1..10)
         /// #       );
         /// #   },
         /// # ));
-        </span><span class="kw">pub fn </span>poll_futures&lt;T2&gt;(<span class="self">self</span>) -&gt; Stream&lt;T2, L, B, NoOrder&gt;
+        </span><span class="kw">pub fn </span>resolve_futures&lt;T2&gt;(<span class="self">self</span>) -&gt; Stream&lt;T2, L, B, NoOrder&gt;
         <span class="kw">where
             </span>T: Future&lt;Output = T2&gt;,
         {
             Stream::new(
                 <span class="self">self</span>.location.clone(),
-                HydroNode::PollFutures {
+                HydroNode::ResolveFutures {
                     input: Box::new(<span class="self">self</span>.ir_node.into_inner()),
                     metadata: <span class="self">self</span>.location.new_node_metadata::&lt;T2&gt;(),
                 },
@@ -11575,30 +11589,34 @@
         /// # use dfir_rs::futures::StreamExt;
         /// # use hydro_lang::*;
         /// # tokio_test::block_on(test_util::stream_transform_test(|process| {
-        ///         let tick = process.tick();
-        ///         process.source_iter(q!([2, 3, 1, 9, 6, 5, 4, 7, 8]))
-        ///             .map(q!(|x| async move {
-        ///                 // tokio::time::sleep works, import then just sleep does not, unsure why
-        ///                 tokio::time::sleep(tokio::time::Duration::from_millis(10)).await;
-        ///                 x
-        ///             }))
-        ///             .poll_futures_ordered()
-        ///             // 2, 3, 1, 9, 6, 5, 4, 7, 8
+        /// let tick = process.tick();
+        /// process.source_iter(q!([2, 3, 1, 9, 6, 5, 4, 7, 8]))
+        ///     .map(q!(|x| async move {
+        ///         // tokio::time::sleep works, import then just sleep does not, unsure why
+        ///         tokio::time::sleep(tokio::time::Duration::from_millis(10)).await;
+        ///         x
+        ///     }))
+        ///     .resolve_futures_ordered()
         /// #   },
         /// #   |mut stream| async move {
+        /// // 2, 3, 1, 9, 6, 5, 4, 7, 8
+        /// #       let mut output = Vec::new();
+        /// #       for _ in 1..10 {
+        /// #           output.insert(stream.next().await.unwrap());
+        /// #       }
         /// #       assert_eq!(
-        /// #           vec![2, 3, 1, 9, 6, 5, 4, 7, 8],
-        /// #           vec![stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap()]
+        /// #           output,
+        /// #           vec![2, 3, 1, 9, 6, 5, 4, 7, 8]
         /// #       );
         /// #   },
         /// # ));
-        </span><span class="kw">pub fn </span>poll_futures_ordered&lt;T2&gt;(<span class="self">self</span>) -&gt; Stream&lt;T2, L, B, Order&gt;
+        </span><span class="kw">pub fn </span>resolve_futures_ordered&lt;T2&gt;(<span class="self">self</span>) -&gt; Stream&lt;T2, L, B, Order&gt;
         <span class="kw">where
             </span>T: Future&lt;Output = T2&gt;,
         {
             Stream::new(
                 <span class="self">self</span>.location.clone(),
-                HydroNode::PollFuturesOrdered {
+                HydroNode::ResolveFuturesOrdered {
                     input: Box::new(<span class="self">self</span>.ir_node.into_inner()),
                     metadata: <span class="self">self</span>.location.new_node_metadata::&lt;T2&gt;(),
                 },
@@ -17329,8 +17347,8 @@
                     transform(neg.as_mut(), seen_tees);
                 }
                 HydroNode::Map { input, .. }
-                | HydroNode::PollFutures { input, .. }
-                | HydroNode::PollFuturesOrdered { input, .. }
+                | HydroNode::ResolveFutures { input, .. }
+                | HydroNode::ResolveFuturesOrdered { input, .. }
                 | HydroNode::FlatMap { input, .. }
                 | HydroNode::Filter { input, .. }
                 | HydroNode::FilterMap { input, .. }
@@ -17449,14 +17467,14 @@
                         metadata: metadata.clone(),
                     }
                 }
-                HydroNode::PollFutures { input, metadata } =&gt; {
-                    HydroNode::PollFutures {
+                HydroNode::ResolveFutures { input, metadata } =&gt; {
+                    HydroNode::ResolveFutures {
                         input: Box::new(input.deep_clone(seen_tees)),
                         metadata: metadata.clone(),
                     }
                 }
-                HydroNode::PollFuturesOrdered { input, metadata } =&gt; {
-                    HydroNode::PollFuturesOrdered {
+                HydroNode::ResolveFuturesOrdered { input, metadata } =&gt; {
+                    HydroNode::ResolveFuturesOrdered {
                         input: Box::new(input.deep_clone(seen_tees)),
                         metadata: metadata.clone(),
                     }
@@ -17966,7 +17984,7 @@
                     <span class="kw-2">*</span>next_stmt_id += <span class="number">1</span>;
                     (stream_ident, pos_location_id)
                 }
-                HydroNode::PollFutures { input, .. } =&gt; {
+                HydroNode::ResolveFutures { input, .. } =&gt; {
                     <span class="kw">let </span>(input_ident, input_location_id) = input
                         .emit_core(builders_or_callback, built_tees, next_stmt_id);
                     <span class="kw">let </span>futures_ident = syn::Ident::new(
@@ -17981,7 +17999,7 @@
                             builder
                                 .add_dfir(
                                     <span class="macro">parse_quote!</span> {
-                                        # futures_ident = # input_ident -&gt; poll_futures();
+                                        # futures_ident = # input_ident -&gt; resolve_futures();
                                     },
                                     <span class="prelude-val">None</span>,
                                     <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>next_stmt_id.to_string()),
@@ -17994,7 +18012,7 @@
                     <span class="kw-2">*</span>next_stmt_id += <span class="number">1</span>;
                     (futures_ident, input_location_id)
                 }
-                HydroNode::PollFuturesOrdered { input, .. } =&gt; {
+                HydroNode::ResolveFuturesOrdered { input, .. } =&gt; {
                     <span class="kw">let </span>(input_ident, input_location_id) = input
                         .emit_core(builders_or_callback, built_tees, next_stmt_id);
                     <span class="kw">let </span>futures_ident = syn::Ident::new(
@@ -18009,7 +18027,8 @@
                             builder
                                 .add_dfir(
                                     <span class="macro">parse_quote!</span> {
-                                        # futures_ident = # input_ident -&gt; poll_futures_ordered();
+                                        # futures_ident = # input_ident -&gt;
+                                        resolve_futures_ordered();
                                     },
                                     <span class="prelude-val">None</span>,
                                     <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>next_stmt_id.to_string()),
@@ -18516,8 +18535,8 @@
                 | HydroNode::Chain { .. }
                 | HydroNode::CrossProduct { .. }
                 | HydroNode::CrossSingleton { .. }
-                | HydroNode::PollFutures { .. }
-                | HydroNode::PollFuturesOrdered { .. }
+                | HydroNode::ResolveFutures { .. }
+                | HydroNode::ResolveFuturesOrdered { .. }
                 | HydroNode::Join { .. }
                 | HydroNode::Difference { .. }
                 | HydroNode::AntiJoin { .. }
@@ -18567,8 +18586,8 @@
                 HydroNode::Join { metadata, .. } =&gt; metadata,
                 HydroNode::Difference { metadata, .. } =&gt; metadata,
                 HydroNode::AntiJoin { metadata, .. } =&gt; metadata,
-                HydroNode::PollFutures { metadata, .. } =&gt; metadata,
-                HydroNode::PollFuturesOrdered { metadata, .. } =&gt; metadata,
+                HydroNode::ResolveFutures { metadata, .. } =&gt; metadata,
+                HydroNode::ResolveFuturesOrdered { metadata, .. } =&gt; metadata,
                 HydroNode::Map { metadata, .. } =&gt; metadata,
                 HydroNode::FlatMap { metadata, .. } =&gt; metadata,
                 HydroNode::Filter { metadata, .. } =&gt; metadata,
@@ -18601,8 +18620,8 @@
                 HydroNode::Join { metadata, .. } =&gt; metadata,
                 HydroNode::Difference { metadata, .. } =&gt; metadata,
                 HydroNode::AntiJoin { metadata, .. } =&gt; metadata,
-                HydroNode::PollFutures { metadata, .. } =&gt; metadata,
-                HydroNode::PollFuturesOrdered { metadata, .. } =&gt; metadata,
+                HydroNode::ResolveFutures { metadata, .. } =&gt; metadata,
+                HydroNode::ResolveFuturesOrdered { metadata, .. } =&gt; metadata,
                 HydroNode::Map { metadata, .. } =&gt; metadata,
                 HydroNode::FlatMap { metadata, .. } =&gt; metadata,
                 HydroNode::Filter { metadata, .. } =&gt; metadata,
@@ -18657,9 +18676,9 @@
                 HydroNode::AntiJoin { pos, neg, .. } =&gt; {
                     <span class="macro">format!</span>(<span class="string">"AntiJoin({}, {})"</span>, pos.print_root(), neg.print_root())
                 }
-                HydroNode::PollFutures { .. } =&gt; <span class="string">"PollFutures()"</span>.to_string(),
-                HydroNode::PollFuturesOrdered { .. } =&gt; {
-                    <span class="string">"PollFuturesOrdered()"</span>.to_string()
+                HydroNode::ResolveFutures { .. } =&gt; <span class="string">"ResolveFutures()"</span>.to_string(),
+                HydroNode::ResolveFuturesOrdered { .. } =&gt; {
+                    <span class="string">"ResolveFuturesOrdered()"</span>.to_string()
                 }
                 HydroNode::Map { f, .. } =&gt; <span class="macro">format!</span>(<span class="string">"Map({:?})"</span>, f),
                 HydroNode::FlatMap { f, .. } =&gt; <span class="macro">format!</span>(<span class="string">"FlatMap({:?})"</span>, f),
@@ -19234,8 +19253,8 @@
                 | HydroNode::CrossSingleton { metadata, .. }
                 | HydroNode::CrossProduct { metadata, .. }
                 | HydroNode::Join { metadata, .. }
-                | HydroNode::PollFutures { metadata, .. }
-                | HydroNode::PollFuturesOrdered { metadata, .. }
+                | HydroNode::ResolveFutures { metadata, .. }
+                | HydroNode::ResolveFuturesOrdered { metadata, .. }
                 | HydroNode::Difference { metadata, .. }
                 | HydroNode::AntiJoin { metadata, .. }
                 | HydroNode::FlatMap { metadata, .. }
@@ -19474,49 +19493,50 @@
                 HydroNode::Persist { inner : Box::new(HydroNode::Tee { inner :
                 TeeNode(inner.<span class="number">0</span>.clone()), metadata : metadata.clone(), }), metadata :
                 metadata.clone(), } } <span class="kw">else </span>{ HydroNode::Tee { inner, metadata } } }
-                HydroNode::PollFutures { input : <span class="macro">mb!</span>(* HydroNode::Persist { inner :
+                HydroNode::ResolveFutures { input : <span class="macro">mb!</span>(* HydroNode::Persist { inner :
                 behind_persist, .. }), metadata, } =&gt; HydroNode::Persist { inner :
-                Box::new(HydroNode::PollFutures { input : behind_persist, metadata :
+                Box::new(HydroNode::ResolveFutures { input : behind_persist, metadata :
                 metadata.clone(), }), metadata : metadata.clone(), },
-                HydroNode::PollFuturesOrdered { input : <span class="macro">mb!</span>(* HydroNode::Persist { inner
-                : behind_persist, .. }), metadata, } =&gt; HydroNode::Persist { inner :
-                Box::new(HydroNode::PollFuturesOrdered { input : behind_persist, metadata
-                : metadata.clone(), }), metadata : metadata.clone(), }, HydroNode::Map {
-                f, input : <span class="macro">mb!</span>(* HydroNode::Persist { inner : behind_persist, .. }),
-                metadata, } =&gt; HydroNode::Persist { inner : Box::new(HydroNode::Map { f,
-                input : behind_persist, metadata : metadata.clone(), }), metadata :
-                metadata.clone(), }, HydroNode::FilterMap { f, input : <span class="macro">mb!</span>(*
-                HydroNode::Persist { inner : behind_persist, .. }), metadata, } =&gt;
-                HydroNode::Persist { inner : Box::new(HydroNode::FilterMap { f, input :
-                behind_persist, metadata : metadata.clone(), }), metadata : metadata
-                .clone() }, HydroNode::FlatMap { f, input : <span class="macro">mb!</span>(* HydroNode::Persist {
+                HydroNode::ResolveFuturesOrdered { input : <span class="macro">mb!</span>(* HydroNode::Persist {
                 inner : behind_persist, .. }), metadata, } =&gt; HydroNode::Persist { inner
-                : Box::new(HydroNode::FlatMap { f, input : behind_persist, metadata :
-                metadata.clone(), }), metadata : metadata.clone() }, HydroNode::Filter {
-                f, input : <span class="macro">mb!</span>(* HydroNode::Persist { inner : behind_persist, .. }),
-                metadata, } =&gt; HydroNode::Persist { inner : Box::new(HydroNode::Filter {
-                f, input : behind_persist, metadata : metadata.clone(), }), metadata :
-                metadata.clone() }, HydroNode::Network { from_key, to_location, to_key,
-                serialize_fn, instantiate_fn, deserialize_fn, input : <span class="macro">mb!</span>(*
+                : Box::new(HydroNode::ResolveFuturesOrdered { input : behind_persist,
+                metadata : metadata.clone(), }), metadata : metadata.clone(), },
+                HydroNode::Map { f, input : <span class="macro">mb!</span>(* HydroNode::Persist { inner :
+                behind_persist, .. }), metadata, } =&gt; HydroNode::Persist { inner :
+                Box::new(HydroNode::Map { f, input : behind_persist, metadata : metadata
+                .clone(), }), metadata : metadata.clone(), }, HydroNode::FilterMap { f,
+                input : <span class="macro">mb!</span>(* HydroNode::Persist { inner : behind_persist, .. }),
+                metadata, } =&gt; HydroNode::Persist { inner : Box::new(HydroNode::FilterMap
+                { f, input : behind_persist, metadata : metadata.clone(), }), metadata :
+                metadata.clone() }, HydroNode::FlatMap { f, input : <span class="macro">mb!</span>(*
                 HydroNode::Persist { inner : behind_persist, .. }), metadata, } =&gt;
-                HydroNode::Persist { inner : Box::new(HydroNode::Network { from_key,
-                to_location, to_key, serialize_fn, instantiate_fn, deserialize_fn, input
-                : behind_persist, metadata : metadata.clone() }), metadata : metadata
-                .clone(), }, HydroNode::Chain { first : <span class="macro">mb!</span>(* HydroNode::Persist { inner
-                : first, metadata : persist_metadata }), second : <span class="macro">mb!</span>(*
-                HydroNode::Persist { inner : second, .. }), metadata } =&gt;
-                HydroNode::Persist { inner : Box::new(HydroNode::Chain { first, second,
-                metadata }), metadata : persist_metadata }, HydroNode::CrossProduct {
-                left : <span class="macro">mb!</span>(* HydroNode::Persist { inner : left, metadata : left_metadata
-                }), right : <span class="macro">mb!</span>(* HydroNode::Persist { inner : right, metadata :
-                right_metadata }), metadata } =&gt; HydroNode::Persist { inner :
-                Box::new(HydroNode::Delta { inner : Box::new(HydroNode::CrossProduct {
-                left : Box::new(HydroNode::Persist { inner : left, metadata :
-                left_metadata }), right : Box::new(HydroNode::Persist { inner : right,
-                metadata : right_metadata }), metadata : metadata.clone() }), metadata :
-                metadata.clone(), }), metadata : metadata.clone(), }, HydroNode::Join {
-                left : <span class="macro">mb!</span>(* HydroNode::Persist { inner : left, metadata : left_metadata
-                }), right : <span class="macro">mb!</span>(* HydroNode::Persist { inner : right, metadata :
+                HydroNode::Persist { inner : Box::new(HydroNode::FlatMap { f, input :
+                behind_persist, metadata : metadata.clone(), }), metadata : metadata
+                .clone() }, HydroNode::Filter { f, input : <span class="macro">mb!</span>(* HydroNode::Persist {
+                inner : behind_persist, .. }), metadata, } =&gt; HydroNode::Persist { inner
+                : Box::new(HydroNode::Filter { f, input : behind_persist, metadata :
+                metadata.clone(), }), metadata : metadata.clone() }, HydroNode::Network {
+                from_key, to_location, to_key, serialize_fn, instantiate_fn,
+                deserialize_fn, input : <span class="macro">mb!</span>(* HydroNode::Persist { inner :
+                behind_persist, .. }), metadata, } =&gt; HydroNode::Persist { inner :
+                Box::new(HydroNode::Network { from_key, to_location, to_key,
+                serialize_fn, instantiate_fn, deserialize_fn, input : behind_persist,
+                metadata : metadata.clone() }), metadata : metadata.clone(), },
+                HydroNode::Chain { first : <span class="macro">mb!</span>(* HydroNode::Persist { inner : first,
+                metadata : persist_metadata }), second : <span class="macro">mb!</span>(* HydroNode::Persist { inner
+                : second, .. }), metadata } =&gt; HydroNode::Persist { inner :
+                Box::new(HydroNode::Chain { first, second, metadata }), metadata :
+                persist_metadata }, HydroNode::CrossProduct { left : <span class="macro">mb!</span>(*
+                HydroNode::Persist { inner : left, metadata : left_metadata }), right :
+                <span class="macro">mb!</span>(* HydroNode::Persist { inner : right, metadata : right_metadata }),
+                metadata } =&gt; HydroNode::Persist { inner : Box::new(HydroNode::Delta {
+                inner : Box::new(HydroNode::CrossProduct { left :
+                Box::new(HydroNode::Persist { inner : left, metadata : left_metadata }),
+                right : Box::new(HydroNode::Persist { inner : right, metadata :
+                right_metadata }), metadata : metadata.clone() }), metadata : metadata
+                .clone(), }), metadata : metadata.clone(), }, HydroNode::Join { left :
+                <span class="macro">mb!</span>(* HydroNode::Persist { inner : left, metadata : left_metadata }),
+                right : <span class="macro">mb!</span>(* HydroNode::Persist { inner : right, metadata :
                 right_metadata }), metadata } =&gt; HydroNode::Persist { inner :
                 Box::new(HydroNode::Delta { inner : Box::new(HydroNode::Join { left :
                 Box::new(HydroNode::Persist { inner : left, metadata : left_metadata }),

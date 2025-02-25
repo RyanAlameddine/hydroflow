@@ -89,8 +89,8 @@
         </span>| HydroNode::CrossSingleton { metadata, .. }
         | HydroNode::CrossProduct { metadata, .. } <span class="comment">// Can technically be derived by multiplying parent cardinalities
         </span>| HydroNode::Join { metadata, .. }
-        | HydroNode::PollFutures { metadata, .. }
-        | HydroNode::PollFuturesOrdered { metadata, .. }
+        | HydroNode::ResolveFutures { metadata, .. }
+        | HydroNode::ResolveFuturesOrdered { metadata, .. }
         | HydroNode::Difference { metadata, .. }
         | HydroNode::AntiJoin { metadata, .. }
         | HydroNode::FlatMap { metadata, .. }

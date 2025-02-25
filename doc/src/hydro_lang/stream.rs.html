@@ -2277,7 +2277,15 @@
 <a href="#2276" id="2276">2276</a>
 <a href="#2277" id="2277">2277</a>
 <a href="#2278" id="2278">2278</a>
-<a href="#2279" id="2279">2279</a></pre></div><pre class="rust"><code><span class="kw">use </span>std::cell::RefCell;
+<a href="#2279" id="2279">2279</a>
+<a href="#2280" id="2280">2280</a>
+<a href="#2281" id="2281">2281</a>
+<a href="#2282" id="2282">2282</a>
+<a href="#2283" id="2283">2283</a>
+<a href="#2284" id="2284">2284</a>
+<a href="#2285" id="2285">2285</a>
+<a href="#2286" id="2286">2286</a>
+<a href="#2287" id="2287">2287</a></pre></div><pre class="rust"><code><span class="kw">use </span>std::cell::RefCell;
 <span class="kw">use </span>std::future::Future;
 <span class="kw">use </span>std::hash::Hash;
 <span class="kw">use </span>std::marker::PhantomData;
@@ -3862,30 +3870,34 @@
     /// # use dfir_rs::futures::StreamExt;
     /// # use hydro_lang::*;
     /// # tokio_test::block_on(test_util::stream_transform_test(|process| {
-    ///         let tick = process.tick();
-    ///         process.source_iter(q!([2, 3, 1, 9, 6, 5, 4, 7, 8]))
-    ///             .map(q!(|x| async move {
-    ///                 // tokio::time::sleep works, import then just sleep does not, unsure why
-    ///                 tokio::time::sleep(tokio::time::Duration::from_millis(10)).await;
-    ///                 x
-    ///             }))
-    ///             .poll_futures()
-    ///         // 1, 2, 3, 4, 5, 6, 7, 8, 9
+    /// let tick = process.tick();
+    /// process.source_iter(q!([2, 3, 1, 9, 6, 5, 4, 7, 8]))
+    ///     .map(q!(|x| async move {
+    ///         // tokio::time::sleep works, import then just sleep does not, unsure why
+    ///         tokio::time::sleep(tokio::time::Duration::from_millis(10)).await;
+    ///         x
+    ///     }))
+    ///     .resolve_futures()
     /// #   },
     /// #   |mut stream| async move {
+    /// // 1, 2, 3, 4, 5, 6, 7, 8, 9
+    /// #       let mut output = HashSet::new();
+    /// #       for _ in 1..10 {
+    /// #           output.insert(stream.next().await.unwrap());
+    /// #       }
     /// #       assert_eq!(
-    /// #           HashSet::&lt;i32&gt;::from_iter(1..10),
-    /// #           HashSet::from_iter(vec![stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap()])
+    /// #           output,
+    /// #           HashSet::&lt;i32&gt;::from_iter(1..10)
     /// #       );
     /// #   },
     /// # ));
-    </span><span class="kw">pub fn </span>poll_futures&lt;T2&gt;(<span class="self">self</span>) -&gt; Stream&lt;T2, L, B, NoOrder&gt;
+    </span><span class="kw">pub fn </span>resolve_futures&lt;T2&gt;(<span class="self">self</span>) -&gt; Stream&lt;T2, L, B, NoOrder&gt;
     <span class="kw">where
         </span>T: Future&lt;Output = T2&gt;,
     {
         Stream::new(
             <span class="self">self</span>.location.clone(),
-            HydroNode::PollFutures {
+            HydroNode::ResolveFutures {
                 input: Box::new(<span class="self">self</span>.ir_node.into_inner()),
                 metadata: <span class="self">self</span>.location.new_node_metadata::&lt;T2&gt;(),
             },
@@ -3901,30 +3913,34 @@
     /// # use dfir_rs::futures::StreamExt;
     /// # use hydro_lang::*;
     /// # tokio_test::block_on(test_util::stream_transform_test(|process| {
-    ///         let tick = process.tick();
-    ///         process.source_iter(q!([2, 3, 1, 9, 6, 5, 4, 7, 8]))
-    ///             .map(q!(|x| async move {
-    ///                 // tokio::time::sleep works, import then just sleep does not, unsure why
-    ///                 tokio::time::sleep(tokio::time::Duration::from_millis(10)).await;
-    ///                 x
-    ///             }))
-    ///             .poll_futures_ordered()
-    ///             // 2, 3, 1, 9, 6, 5, 4, 7, 8
+    /// let tick = process.tick();
+    /// process.source_iter(q!([2, 3, 1, 9, 6, 5, 4, 7, 8]))
+    ///     .map(q!(|x| async move {
+    ///         // tokio::time::sleep works, import then just sleep does not, unsure why
+    ///         tokio::time::sleep(tokio::time::Duration::from_millis(10)).await;
+    ///         x
+    ///     }))
+    ///     .resolve_futures_ordered()
     /// #   },
     /// #   |mut stream| async move {
+    /// // 2, 3, 1, 9, 6, 5, 4, 7, 8
+    /// #       let mut output = Vec::new();
+    /// #       for _ in 1..10 {
+    /// #           output.insert(stream.next().await.unwrap());
+    /// #       }
     /// #       assert_eq!(
-    /// #           vec![2, 3, 1, 9, 6, 5, 4, 7, 8],
-    /// #           vec![stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap(), stream.next().await.unwrap()]
+    /// #           output,
+    /// #           vec![2, 3, 1, 9, 6, 5, 4, 7, 8]
     /// #       );
     /// #   },
     /// # ));
-    </span><span class="kw">pub fn </span>poll_futures_ordered&lt;T2&gt;(<span class="self">self</span>) -&gt; Stream&lt;T2, L, B, Order&gt;
+    </span><span class="kw">pub fn </span>resolve_futures_ordered&lt;T2&gt;(<span class="self">self</span>) -&gt; Stream&lt;T2, L, B, Order&gt;
     <span class="kw">where
         </span>T: Future&lt;Output = T2&gt;,
     {
         Stream::new(
             <span class="self">self</span>.location.clone(),
-            HydroNode::PollFuturesOrdered {
+            HydroNode::ResolveFuturesOrdered {
                 input: Box::new(<span class="self">self</span>.ir_node.into_inner()),
                 metadata: <span class="self">self</span>.location.new_node_metadata::&lt;T2&gt;(),
             },
@@ -3947,7 +3963,7 @@
     //                     tokio::time::sleep(Duration::from_millis(10)).await;
     //                     x
     //                 }))
-    //                 .poll_futures()
+    //                 .resolve_futures()
     //         },
     //         |stream| async move {
 

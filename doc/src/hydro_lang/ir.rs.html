@@ -2964,11 +2964,11 @@
         metadata: HydroIrMetadata,
     },
 
-    PollFutures {
+    ResolveFutures {
         input: Box&lt;HydroNode&gt;,
         metadata: HydroIrMetadata,
     },
-    PollFuturesOrdered {
+    ResolveFuturesOrdered {
         input: Box&lt;HydroNode&gt;,
         metadata: HydroIrMetadata,
     },
@@ -3219,8 +3219,8 @@
             }
 
             HydroNode::Map { input, .. }
-            | HydroNode::PollFutures { input, .. }
-            | HydroNode::PollFuturesOrdered { input, .. }
+            | HydroNode::ResolveFutures { input, .. }
+            | HydroNode::ResolveFuturesOrdered { input, .. }
             | HydroNode::FlatMap { input, .. }
             | HydroNode::Filter { input, .. }
             | HydroNode::FilterMap { input, .. }
@@ -3341,11 +3341,11 @@
                 neg: Box::new(neg.deep_clone(seen_tees)),
                 metadata: metadata.clone(),
             },
-            HydroNode::PollFutures { input, metadata } =&gt; HydroNode::PollFutures {
+            HydroNode::ResolveFutures { input, metadata } =&gt; HydroNode::ResolveFutures {
                 input: Box::new(input.deep_clone(seen_tees)),
                 metadata: metadata.clone(),
             },
-            HydroNode::PollFuturesOrdered { input, metadata } =&gt; HydroNode::PollFuturesOrdered {
+            HydroNode::ResolveFuturesOrdered { input, metadata } =&gt; HydroNode::ResolveFuturesOrdered {
                 input: Box::new(input.deep_clone(seen_tees)),
                 metadata: metadata.clone(),
             },
@@ -3866,7 +3866,7 @@
                 (stream_ident, pos_location_id)
             }
 
-            HydroNode::PollFutures { input, .. } =&gt; {
+            HydroNode::ResolveFutures { input, .. } =&gt; {
                 <span class="kw">let </span>(input_ident, input_location_id) =
                     input.emit_core(builders_or_callback, built_tees, next_stmt_id);
 
@@ -3878,7 +3878,7 @@
                         <span class="kw">let </span>builder = graph_builders.entry(input_location_id).or_default();
                         builder.add_dfir(
                             <span class="macro">parse_quote!</span> {
-                                #futures_ident = #input_ident -&gt; poll_futures();
+                                #futures_ident = #input_ident -&gt; resolve_futures();
                             },
                             <span class="prelude-val">None</span>,
                             <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>next_stmt_id.to_string()),
@@ -3894,7 +3894,7 @@
                 (futures_ident, input_location_id)
             }
 
-            HydroNode::PollFuturesOrdered { input, .. } =&gt; {
+            HydroNode::ResolveFuturesOrdered { input, .. } =&gt; {
                 <span class="kw">let </span>(input_ident, input_location_id) =
                     input.emit_core(builders_or_callback, built_tees, next_stmt_id);
 
@@ -3906,7 +3906,7 @@
                         <span class="kw">let </span>builder = graph_builders.entry(input_location_id).or_default();
                         builder.add_dfir(
                             <span class="macro">parse_quote!</span> {
-                                #futures_ident = #input_ident -&gt; poll_futures_ordered();
+                                #futures_ident = #input_ident -&gt; resolve_futures_ordered();
                             },
                             <span class="prelude-val">None</span>,
                             <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>next_stmt_id.to_string()),
@@ -4410,8 +4410,8 @@
             | HydroNode::Chain { .. }
             | HydroNode::CrossProduct { .. }
             | HydroNode::CrossSingleton { .. }
-            | HydroNode::PollFutures { .. }
-            | HydroNode::PollFuturesOrdered { .. }
+            | HydroNode::ResolveFutures { .. }
+            | HydroNode::ResolveFuturesOrdered { .. }
             | HydroNode::Join { .. }
             | HydroNode::Difference { .. }
             | HydroNode::AntiJoin { .. }
@@ -4467,8 +4467,8 @@
             HydroNode::Join { metadata, .. } =&gt; metadata,
             HydroNode::Difference { metadata, .. } =&gt; metadata,
             HydroNode::AntiJoin { metadata, .. } =&gt; metadata,
-            HydroNode::PollFutures { metadata, .. } =&gt; metadata,
-            HydroNode::PollFuturesOrdered { metadata, .. } =&gt; metadata,
+            HydroNode::ResolveFutures { metadata, .. } =&gt; metadata,
+            HydroNode::ResolveFuturesOrdered { metadata, .. } =&gt; metadata,
             HydroNode::Map { metadata, .. } =&gt; metadata,
             HydroNode::FlatMap { metadata, .. } =&gt; metadata,
             HydroNode::Filter { metadata, .. } =&gt; metadata,
@@ -4504,8 +4504,8 @@
             HydroNode::Join { metadata, .. } =&gt; metadata,
             HydroNode::Difference { metadata, .. } =&gt; metadata,
             HydroNode::AntiJoin { metadata, .. } =&gt; metadata,
-            HydroNode::PollFutures { metadata, .. } =&gt; metadata,
-            HydroNode::PollFuturesOrdered { metadata, .. } =&gt; metadata,
+            HydroNode::ResolveFutures { metadata, .. } =&gt; metadata,
+            HydroNode::ResolveFuturesOrdered { metadata, .. } =&gt; metadata,
             HydroNode::Map { metadata, .. } =&gt; metadata,
             HydroNode::FlatMap { metadata, .. } =&gt; metadata,
             HydroNode::Filter { metadata, .. } =&gt; metadata,
@@ -4561,8 +4561,8 @@
             HydroNode::AntiJoin { pos, neg, .. } =&gt; {
                 <span class="macro">format!</span>(<span class="string">"AntiJoin({}, {})"</span>, pos.print_root(), neg.print_root())
             }
-            HydroNode::PollFutures { .. } =&gt; <span class="string">"PollFutures()"</span>.to_string(),
-            HydroNode::PollFuturesOrdered { .. } =&gt; <span class="string">"PollFuturesOrdered()"</span>.to_string(),
+            HydroNode::ResolveFutures { .. } =&gt; <span class="string">"ResolveFutures()"</span>.to_string(),
+            HydroNode::ResolveFuturesOrdered { .. } =&gt; <span class="string">"ResolveFuturesOrdered()"</span>.to_string(),
             HydroNode::Map { f, .. } =&gt; <span class="macro">format!</span>(<span class="string">"Map({:?})"</span>, f),
             HydroNode::FlatMap { f, .. } =&gt; <span class="macro">format!</span>(<span class="string">"FlatMap({:?})"</span>, f),
             HydroNode::Filter { f, .. } =&gt; <span class="macro">format!</span>(<span class="string">"Filter({:?})"</span>, f),
