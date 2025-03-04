@@ -109,11 +109,30 @@
 <a href="#108" id="108">108</a>
 <a href="#109" id="109">109</a>
 <a href="#110" id="110">110</a>
-<a href="#111" id="111">111</a></pre></div><pre class="rust"><code><span class="kw">use </span>quote::quote_spanned;
+<a href="#111" id="111">111</a>
+<a href="#112" id="112">112</a>
+<a href="#113" id="113">113</a>
+<a href="#114" id="114">114</a>
+<a href="#115" id="115">115</a>
+<a href="#116" id="116">116</a>
+<a href="#117" id="117">117</a>
+<a href="#118" id="118">118</a>
+<a href="#119" id="119">119</a>
+<a href="#120" id="120">120</a>
+<a href="#121" id="121">121</a>
+<a href="#122" id="122">122</a>
+<a href="#123" id="123">123</a>
+<a href="#124" id="124">124</a>
+<a href="#125" id="125">125</a>
+<a href="#126" id="126">126</a>
+<a href="#127" id="127">127</a>
+<a href="#128" id="128">128</a>
+<a href="#129" id="129">129</a>
+<a href="#130" id="130">130</a></pre></div><pre class="rust"><code><span class="kw">use </span>quote::quote_spanned;
 <span class="kw">use </span>syn::Ident;
 
 <span class="kw">use super</span>::{
-    OperatorCategory, OperatorConstraints, OperatorWriteOutput, WriteContextArgs, RANGE_0, RANGE_1
+    OperatorCategory, OperatorConstraints, OperatorWriteOutput, RANGE_0, RANGE_1, WriteContextArgs,
 };
 
 <span class="kw">pub const </span>RESOLVE_FUTURES: OperatorConstraints = OperatorConstraints {
@@ -132,22 +151,30 @@
     ports_inn: <span class="prelude-val">None</span>,
     ports_out: <span class="prelude-val">None</span>,
     input_delaytype_fn: |<span class="kw">_</span>| <span class="prelude-val">None</span>,
-    write_fn: <span class="kw">move </span>|wc, <span class="kw">_</span>| resolve_futures_writer(
-        Ident::new(<span class="string">"FuturesUnordered"</span>, wc.op_span), 
-        Ident::new(<span class="string">"push"</span>, wc.op_span),
-        wc)
+    write_fn: <span class="kw">move </span>|wc, <span class="kw">_</span>| {
+        resolve_futures_writer(
+            Ident::new(<span class="string">"FuturesUnordered"</span>, wc.op_span),
+            Ident::new(<span class="string">"push"</span>, wc.op_span),
+            wc,
+        )
+    },
 };
 
-<span class="kw">pub fn </span>resolve_futures_writer(future_type: Ident, push_fn: Ident, wc @ <span class="kw-2">&amp;</span>WriteContextArgs {
-    root,
-    context,
-    op_span,
-    ident,
-    inputs,
-    outputs,
-    is_pull,
-    ..
-} : <span class="kw-2">&amp;</span>WriteContextArgs) -&gt; <span class="prelude-ty">Result</span>&lt;OperatorWriteOutput, ()&gt; {
+<span class="kw">pub fn </span>resolve_futures_writer(
+    future_type: Ident,
+    push_fn: Ident,
+    wc @ <span class="kw-2">&amp;</span>WriteContextArgs {
+        root,
+        context,
+        op_span,
+        ident,
+        inputs,
+        outputs,
+        is_pull,
+        work_fn,
+        ..
+    }: <span class="kw-2">&amp;</span>WriteContextArgs,
+) -&gt; <span class="prelude-ty">Result</span>&lt;OperatorWriteOutput, ()&gt; {
     <span class="kw">let </span>futures_ident = wc.make_ident(<span class="string">"futures"</span>);
 
     <span class="kw">let </span>write_prologue = <span class="macro">quote_spanned!</span> {op_span=&gt;
@@ -164,26 +191,29 @@
             <span class="kw">let </span>#ident = {
                 <span class="kw">let </span><span class="kw-2">mut </span>out = ::std::vec::Vec::new();
 
-                #input
-                    .for_each(|fut| {
-                        <span class="kw">let </span><span class="kw-2">mut </span>fut = ::std::boxed::Box::pin(fut);
-                        <span class="kw">if let </span>#root::futures::task::Poll::Ready(val) = #root::futures::Future::poll(::std::pin::Pin::as_mut(<span class="kw-2">&amp;mut </span>fut), <span class="kw-2">&amp;mut </span>::std::task::Context::from_waker(<span class="kw-2">&amp;</span>#context.waker())) {
-                            out.push(val);
-                        } <span class="kw">else </span>{
-                            #context
-                                .state_ref(#futures_ident)
-                                .borrow_mut()
-                                .#push_fn(fut);
-                        }
-                    });
-                <span class="kw">while let </span>#root::futures::task::Poll::Ready(<span class="prelude-val">Some</span>(val)) = 
-                    #root::futures::Stream::poll_next(::std::pin::Pin::new(<span class="kw-2">&amp;mut *</span>#context
-                        .state_ref(#futures_ident)
+                <span class="kw">let </span><span class="kw-2">mut </span>state = <span class="kw">unsafe </span>{
+                    <span class="comment">// SAFETY: handle from `#df_ident.add_state(..)`.
+                    </span>#context.state_ref_unchecked(#futures_ident)
                         .borrow_mut()
-                    ), <span class="kw-2">&amp;mut </span>::std::task::Context::from_waker(<span class="kw-2">&amp;</span>#context.waker()))
-                {
-                    out.push(val);
-                }
+                };
+
+                #work_fn(|| {
+                    #input
+                        .for_each(|fut| {
+                            <span class="kw">let </span><span class="kw-2">mut </span>fut = ::std::boxed::Box::pin(fut);
+                            <span class="kw">if let </span>#root::futures::task::Poll::Ready(val) = #root::futures::Future::poll(::std::pin::Pin::as_mut(<span class="kw-2">&amp;mut </span>fut), <span class="kw-2">&amp;mut </span>::std::task::Context::from_waker(<span class="kw-2">&amp;</span>#context.waker())) {
+                                out.push(val);
+                            } <span class="kw">else </span>{
+                                state.#push_fn(fut);
+                            }
+                        });
+
+                    <span class="kw">while let </span>#root::futures::task::Poll::Ready(<span class="prelude-val">Some</span>(val)) =
+                        #root::futures::Stream::poll_next(::std::pin::Pin::new(<span class="kw-2">&amp;mut *</span>state), <span class="kw-2">&amp;mut </span>::std::task::Context::from_waker(<span class="kw-2">&amp;</span>#context.waker()))
+                    {
+                        out.push(val);
+                    }
+                });
 
                 ::std::iter::IntoIterator::into_iter(out)
             };
@@ -193,31 +223,39 @@
         <span class="macro">quote_spanned!</span> {op_span=&gt;
             <span class="kw">let </span>#ident = {
                 <span class="kw">let </span><span class="kw-2">mut </span>out = #output;
+                <span class="kw">let </span><span class="kw-2">mut </span>state = <span class="kw">unsafe </span>{
+                    <span class="comment">// SAFETY: handle from `#df_ident.add_state(..)`.
+                    </span>#context.state_ref_unchecked(#futures_ident).borrow_mut()
+                };
+
+                #work_fn(|| {
+                    <span class="kw">while let </span>#root::futures::task::Poll::Ready(<span class="prelude-val">Some</span>(val)) =
+                        #root::futures::Stream::poll_next(::std::pin::Pin::new(<span class="kw-2">&amp;mut *</span>state), <span class="kw-2">&amp;mut </span>::std::task::Context::from_waker(<span class="kw-2">&amp;</span>#context.waker()))
+                    {
+                        #root::pusherator::Pusherator::give(<span class="kw-2">&amp;mut </span>out, val)
+                    }
+                });
+
                 <span class="kw">let </span>consumer = #root::pusherator::for_each::ForEach::new(|fut| {
-                    <span class="kw">let </span>fut = ::std::boxed::Box::pin(fut);
-                    #context
-                        .state_ref(#futures_ident)
-                        .borrow_mut()
-                        .#push_fn(fut);
+                    #work_fn(|| {
+                        <span class="kw">let </span>fut = ::std::boxed::Box::pin(fut);
+                        <span class="kw">unsafe </span>{
+                            <span class="comment">// SAFETY: handle from `#df_ident.add_state(..)`.
+                            </span>#context.state_ref_unchecked(#futures_ident).borrow_mut()
+                        }.#push_fn(fut);
+                    });
                     #context.schedule_subgraph(#context.current_subgraph(), <span class="bool-val">true</span>);
                 });
-                <span class="kw">while let </span>#root::futures::task::Poll::Ready(<span class="prelude-val">Some</span>(val)) = 
-                    #root::futures::Stream::poll_next(::std::pin::Pin::new(<span class="kw-2">&amp;mut *</span>#context
-                        .state_ref(#futures_ident)
-                        .borrow_mut()
-                    ), <span class="kw-2">&amp;mut </span>::std::task::Context::from_waker(<span class="kw-2">&amp;</span>#context.waker()))
-                {
-                    #root::pusherator::Pusherator::give(<span class="kw-2">&amp;mut </span>out, val)
-                }
 
                 consumer
             };
         }
     };
+
     <span class="prelude-val">Ok</span>(OperatorWriteOutput {
-    write_prologue,
-    write_iterator,
-    ..Default::default()
+        write_prologue,
+        write_iterator,
+        ..Default::default()
     })
 }
 </code></pre></div></section></main></body></html>
