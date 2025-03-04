@@ -9948,9 +9948,7 @@
 <a href="#9947" id="9947">9947</a>
 <a href="#9948" id="9948">9948</a>
 <a href="#9949" id="9949">9949</a>
-<a href="#9950" id="9950">9950</a>
-<a href="#9951" id="9951">9951</a>
-<a href="#9952" id="9952">9952</a></pre></div><pre class="rust"><code><span class="kw">pub use </span>dfir_rs;
+<a href="#9950" id="9950">9950</a></pre></div><pre class="rust"><code><span class="kw">pub use </span>dfir_rs;
 <span class="kw">pub use </span>stageleft::q;
 <span class="attr">#[doc(hidden)]
 </span><span class="kw">pub mod </span>runtime_support {
@@ -11568,7 +11566,6 @@
         /// # use dfir_rs::futures::StreamExt;
         /// # use hydro_lang::*;
         /// # tokio_test::block_on(test_util::stream_transform_test(|process| {
-        /// let tick = process.tick();
         /// process.source_iter(q!([2, 3, 1, 9, 6, 5, 4, 7, 8]))
         ///     .map(q!(|x| async move {
         ///         tokio::time::sleep(tokio::time::Duration::from_millis(10)).await;
@@ -11609,7 +11606,6 @@
         /// # use dfir_rs::futures::StreamExt;
         /// # use hydro_lang::*;
         /// # tokio_test::block_on(test_util::stream_transform_test(|process| {
-        /// let tick = process.tick();
         /// process.source_iter(q!([2, 3, 1, 9, 6, 5, 4, 7, 8]))
         ///     .map(q!(|x| async move {
         ///         tokio::time::sleep(tokio::time::Duration::from_millis(10)).await;
