@@ -9927,7 +9927,30 @@
 <a href="#9926" id="9926">9926</a>
 <a href="#9927" id="9927">9927</a>
 <a href="#9928" id="9928">9928</a>
-<a href="#9929" id="9929">9929</a></pre></div><pre class="rust"><code><span class="kw">pub use </span>dfir_rs;
+<a href="#9929" id="9929">9929</a>
+<a href="#9930" id="9930">9930</a>
+<a href="#9931" id="9931">9931</a>
+<a href="#9932" id="9932">9932</a>
+<a href="#9933" id="9933">9933</a>
+<a href="#9934" id="9934">9934</a>
+<a href="#9935" id="9935">9935</a>
+<a href="#9936" id="9936">9936</a>
+<a href="#9937" id="9937">9937</a>
+<a href="#9938" id="9938">9938</a>
+<a href="#9939" id="9939">9939</a>
+<a href="#9940" id="9940">9940</a>
+<a href="#9941" id="9941">9941</a>
+<a href="#9942" id="9942">9942</a>
+<a href="#9943" id="9943">9943</a>
+<a href="#9944" id="9944">9944</a>
+<a href="#9945" id="9945">9945</a>
+<a href="#9946" id="9946">9946</a>
+<a href="#9947" id="9947">9947</a>
+<a href="#9948" id="9948">9948</a>
+<a href="#9949" id="9949">9949</a>
+<a href="#9950" id="9950">9950</a>
+<a href="#9951" id="9951">9951</a>
+<a href="#9952" id="9952">9952</a></pre></div><pre class="rust"><code><span class="kw">pub use </span>dfir_rs;
 <span class="kw">pub use </span>stageleft::q;
 <span class="attr">#[doc(hidden)]
 </span><span class="kw">pub mod </span>runtime_support {
@@ -10051,9 +10074,9 @@
     <span class="kw">pub use </span>std::rc::Rc;
     <span class="kw">pub use </span>dfir_rs::bytes::Bytes;
     <span class="kw">pub use </span>dfir_rs::futures;
-    <span class="kw">pub use </span>serde::de::DeserializeOwned;
     <span class="kw">pub use </span>serde::Serialize;
-    <span class="kw">pub use </span>stageleft::{q, IntoQuotedMut, QuotedWithContext};
+    <span class="kw">pub use </span>serde::de::DeserializeOwned;
+    <span class="kw">pub use </span>stageleft::{IntoQuotedMut, QuotedWithContext, q};
     <span class="kw">pub use </span>syn::parse_quote;
     <span class="kw">pub use </span>tokio::time::Instant;
     <span class="kw">pub use </span><span class="kw">crate</span>::__staged::builder::FLOW_USED_MESSAGE;
@@ -10066,8 +10089,8 @@
     };
     <span class="kw">pub use </span><span class="kw">crate</span>::__staged::location::tick::{Atomic, NoAtomic};
     <span class="kw">pub use </span><span class="kw">crate</span>::__staged::location::{
-        check_matching_location, CanSend, ExternalProcess, Location, LocationId, NoTick,
-        Tick,
+        CanSend, ExternalProcess, Location, LocationId, NoTick, Tick,
+        check_matching_location,
     };
     <span class="kw">pub use </span><span class="kw">crate</span>::__staged::staging_util::get_this_crate;
     <span class="kw">pub use </span><span class="kw">crate</span>::__staged::{
@@ -12192,8 +12215,8 @@
         <span class="kw">pub use </span>hydro_deploy::Deployment;
         <span class="kw">pub use </span>serde::{Deserialize, Serialize};
         <span class="kw">pub use </span>stageleft::q;
-        <span class="kw">pub use </span><span class="kw">crate</span>::__staged::location::Location;
         <span class="kw">pub use </span><span class="kw">crate</span>::__staged::FlowBuilder;
+        <span class="kw">pub use </span><span class="kw">crate</span>::__staged::location::Location;
         <span class="kw">pub struct </span>P1 {}
         <span class="kw">pub struct </span>P2 {}
         <span class="attr">#[derive(Serialize, Deserialize, Debug)]
@@ -12233,7 +12256,7 @@
     <span class="kw">pub use </span>std::marker::PhantomData;
     <span class="kw">pub use </span>std::ops::Deref;
     <span class="kw">pub use </span>std::rc::Rc;
-    <span class="kw">pub use </span>stageleft::{q, IntoQuotedMut, QuotedWithContext};
+    <span class="kw">pub use </span>stageleft::{IntoQuotedMut, QuotedWithContext, q};
     <span class="kw">pub use </span><span class="kw">crate</span>::__staged::builder::FLOW_USED_MESSAGE;
     <span class="kw">pub use </span><span class="kw">crate</span>::__staged::cycle::{
         CycleCollection, CycleCollectionWithInitial, CycleComplete, DeferTick,
@@ -12242,7 +12265,7 @@
     <span class="kw">pub use </span><span class="kw">crate</span>::__staged::ir::{HydroLeaf, HydroNode, TeeNode};
     <span class="kw">pub use </span><span class="kw">crate</span>::__staged::location::tick::{Atomic, NoAtomic};
     <span class="kw">pub use </span><span class="kw">crate</span>::__staged::location::{
-        check_matching_location, Location, LocationId, NoTick, Tick,
+        Location, LocationId, NoTick, Tick, check_matching_location,
     };
     <span class="kw">pub use </span><span class="kw">crate</span>::__staged::{Bounded, Optional, Stream, Unbounded};
     <span class="kw">pub use </span><span class="kw">crate</span>::singleton::Singleton;
@@ -12759,7 +12782,7 @@
     <span class="kw">pub use </span>std::marker::PhantomData;
     <span class="kw">pub use </span>std::ops::Deref;
     <span class="kw">pub use </span>std::rc::Rc;
-    <span class="kw">pub use </span>stageleft::{q, IntoQuotedMut, QuotedWithContext};
+    <span class="kw">pub use </span>stageleft::{IntoQuotedMut, QuotedWithContext, q};
     <span class="kw">pub use </span>syn::parse_quote;
     <span class="kw">pub use </span><span class="kw">crate</span>::__staged::builder::FLOW_USED_MESSAGE;
     <span class="kw">pub use </span><span class="kw">crate</span>::__staged::cycle::{
@@ -12767,7 +12790,7 @@
     };
     <span class="kw">pub use </span><span class="kw">crate</span>::__staged::ir::{HydroLeaf, HydroNode, HydroSource, TeeNode};
     <span class="kw">pub use </span><span class="kw">crate</span>::__staged::location::tick::{Atomic, NoAtomic};
-    <span class="kw">pub use </span><span class="kw">crate</span>::__staged::location::{check_matching_location, LocationId, NoTick};
+    <span class="kw">pub use </span><span class="kw">crate</span>::__staged::location::{LocationId, NoTick, check_matching_location};
     <span class="kw">pub use </span><span class="kw">crate</span>::__staged::singleton::ZipResult;
     <span class="kw">pub use </span><span class="kw">crate</span>::__staged::stream::NoOrder;
     <span class="kw">pub use </span><span class="kw">crate</span>::__staged::{Bounded, Location, Singleton, Stream, Tick, Unbounded};
@@ -13368,7 +13391,7 @@
     <span class="kw">pub use </span>dfir_rs::futures::stream::Stream <span class="kw">as </span>FuturesStream;
     <span class="kw">pub use </span>dfir_rs::{tokio, tokio_stream};
     <span class="kw">pub use </span>proc_macro2::Span;
-    <span class="kw">pub use </span>stageleft::{q, QuotedWithContext};
+    <span class="kw">pub use </span>stageleft::{QuotedWithContext, q};
     <span class="kw">pub use </span><span class="kw">super</span>::builder::FlowState;
     <span class="kw">pub use </span><span class="kw">crate</span>::__staged::cycle::{CycleCollection, ForwardRef, ForwardRefMarker};
     <span class="kw">pub use </span><span class="kw">crate</span>::__staged::ir::{DebugType, HydroIrMetadata, HydroNode, HydroSource};
@@ -13376,8 +13399,8 @@
     <span class="kw">pub mod </span>external_process {
         <span class="kw">pub use </span>std::marker::PhantomData;
         <span class="kw">pub use </span>dfir_rs::bytes::Bytes;
-        <span class="kw">pub use </span>serde::de::DeserializeOwned;
         <span class="kw">pub use </span>serde::Serialize;
+        <span class="kw">pub use </span>serde::de::DeserializeOwned;
         <span class="kw">pub use super</span>::{Location, LocationId, NoTick};
         <span class="kw">pub use </span><span class="kw">crate</span>::__staged::builder::FlowState;
         <span class="kw">pub use </span><span class="kw">crate</span>::__staged::ir::{HydroNode, HydroSource};
@@ -13553,10 +13576,10 @@
         <span class="kw">pub use </span>proc_macro2::{Span, TokenStream};
         <span class="kw">pub use </span>quote::quote;
         <span class="kw">pub use </span>stageleft::runtime_support::FreeVariableWithContext;
-        <span class="kw">pub use </span>stageleft::{quote_type, QuotedWithContext};
+        <span class="kw">pub use </span>stageleft::{QuotedWithContext, quote_type};
         <span class="kw">pub use super</span>::{Location, LocationId};
         <span class="kw">pub use </span><span class="kw">crate</span>::__staged::builder::FlowState;
-        <span class="kw">pub use </span><span class="kw">crate</span>::__staged::staging_util::{get_this_crate, Invariant};
+        <span class="kw">pub use </span><span class="kw">crate</span>::__staged::staging_util::{Invariant, get_this_crate};
         <span class="kw">pub mod </span>cluster_id {
             <span class="kw">pub use </span>std::fmt::{Debug, Display};
             <span class="kw">pub use </span>std::hash::Hash;
@@ -13852,7 +13875,7 @@
         <span class="kw">pub use </span>std::marker::PhantomData;
         <span class="kw">pub use </span>proc_macro2::Span;
         <span class="kw">pub use </span>sealed::sealed;
-        <span class="kw">pub use </span>stageleft::{q, QuotedWithContext};
+        <span class="kw">pub use </span>stageleft::{QuotedWithContext, q};
         <span class="kw">pub use super</span>::{Cluster, Location, LocationId, Process};
         <span class="kw">pub use </span><span class="kw">crate</span>::__staged::builder::FlowState;
         <span class="kw">pub use </span><span class="kw">crate</span>::__staged::cycle::{
@@ -13995,6 +14018,7 @@
                 );
                 (
                     ForwardRef {
+                        completed: <span class="bool-val">false</span>,
                         ident: ident.clone(),
                         expected_location: <span class="self">self</span>.id(),
                         _phantom: PhantomData,
@@ -14027,6 +14051,7 @@
                 );
                 (
                     ForwardRef {
+                        completed: <span class="bool-val">false</span>,
                         ident: ident.clone(),
                         expected_location: <span class="self">self</span>.id(),
                         _phantom: PhantomData,
@@ -14062,6 +14087,7 @@
                 );
                 (
                     TickCycle {
+                        completed: <span class="bool-val">false</span>,
                         ident: ident.clone(),
                         expected_location: <span class="self">self</span>.id(),
                         _phantom: PhantomData,
@@ -14098,6 +14124,7 @@
                 );
                 (
                     TickCycle {
+                        completed: <span class="bool-val">false</span>,
                         ident: ident.clone(),
                         expected_location: <span class="self">self</span>.id(),
                         _phantom: PhantomData,
@@ -14143,8 +14170,8 @@
     <span class="kw">pub use </span>dfir_lang::graph::DfirGraph;
     <span class="kw">pub use </span>dfir_rs::bytes::Bytes;
     <span class="kw">pub use </span>dfir_rs::futures::{Sink, Stream};
-    <span class="kw">pub use </span>serde::de::DeserializeOwned;
     <span class="kw">pub use </span>serde::Serialize;
+    <span class="kw">pub use </span>serde::de::DeserializeOwned;
     <span class="kw">pub use </span>stageleft::QuotedWithContext;
     <span class="kw">pub mod </span>macro_runtime {
         <span class="kw">pub use </span>std::cell::RefCell;
@@ -14454,14 +14481,14 @@
     </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">mod </span>trybuild {
         <span class="kw">use </span>std::fs;
         <span class="kw">use </span>std::path::PathBuf;
-        <span class="kw">use </span>dfir_lang::graph::{partition_graph, DfirGraph};
+        <span class="kw">use </span>dfir_lang::graph::{DfirGraph, partition_graph};
         <span class="kw">use </span>sha2::{Digest, Sha256};
         <span class="kw">use </span>stageleft::internal::quote;
         <span class="kw">use </span>syn::visit_mut::VisitMut;
         <span class="kw">use </span>trybuild_internals_api::cargo::{<span class="self">self</span>, Metadata};
         <span class="kw">use </span>trybuild_internals_api::env::Update;
         <span class="kw">use </span>trybuild_internals_api::run::{PathDependency, Project};
-        <span class="kw">use </span>trybuild_internals_api::{dependencies, features, path, Runner};
+        <span class="kw">use </span>trybuild_internals_api::{Runner, dependencies, features, path};
         <span class="kw">use </span><span class="kw">super</span>::trybuild_rewriters::ReplaceCrateNameWithStaged;
         <span class="kw">static </span>IS_TEST: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(
             <span class="bool-val">false</span>,
@@ -14729,17 +14756,17 @@
         <span class="kw">use </span>dfir_rs::futures::{Sink, SinkExt, Stream, StreamExt};
         <span class="kw">use </span>dfir_rs::util::deploy::{ConnectedSink, ConnectedSource};
         <span class="kw">use </span>hydro_deploy::custom_service::CustomClientPort;
+        <span class="kw">use </span>hydro_deploy::hydroflow_crate::HydroflowCrateService;
         <span class="kw">use </span>hydro_deploy::hydroflow_crate::ports::{
             DemuxSink, HydroflowSink, HydroflowSource, TaggedSource,
         };
         <span class="kw">use </span>hydro_deploy::hydroflow_crate::tracing_options::TracingOptions;
-        <span class="kw">use </span>hydro_deploy::hydroflow_crate::HydroflowCrateService;
         <span class="kw">use </span>hydro_deploy::{
             CustomService, Deployment, Host, HydroflowCrate, TracingResults,
         };
         <span class="kw">use </span>nameof::name_of;
-        <span class="kw">use </span>serde::de::DeserializeOwned;
         <span class="kw">use </span>serde::Serialize;
+        <span class="kw">use </span>serde::de::DeserializeOwned;
         <span class="kw">use </span>stageleft::{QuotedWithContext, RuntimeData};
         <span class="kw">use </span>tokio::sync::RwLock;
         <span class="kw">use </span><span class="kw">super</span>::trybuild::create_graph_trybuild;
@@ -15776,7 +15803,7 @@
         DeployPorts,
     };
     <span class="kw">pub use </span>serde::{Deserialize, Serialize};
-    <span class="kw">pub use </span>stageleft::{q, QuotedWithContext, RuntimeData};
+    <span class="kw">pub use </span>stageleft::{QuotedWithContext, RuntimeData, q};
     <span class="kw">pub use </span><span class="kw">crate</span>::deploy_runtime::HydroMeta;
     <span class="kw">pub fn </span>cluster_members(
         cli: RuntimeData&lt;<span class="kw-2">&amp;</span>DeployPorts&lt;HydroMeta&gt;&gt;,
@@ -15911,18 +15938,37 @@
     <span class="kw">pub use </span><span class="kw">crate</span>::cycle::CycleCollectionWithInitial;
     <span class="kw">pub use </span><span class="kw">crate</span>::cycle::ForwardRef;
     <span class="attr">#[cfg(all(stageleft_macro, not(stageleft_macro)))]
+    </span><span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, S: CycleComplete&lt;<span class="lifetime">'a</span>, ForwardRefMarker&gt;&gt; Drop <span class="kw">for </span>ForwardRef&lt;<span class="lifetime">'a</span>, S&gt; {
+        <span class="kw">fn </span>drop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+            <span class="kw">if </span>!<span class="self">self</span>.completed {
+                <span class="macro">panic!</span>(<span class="string">"ForwardRef dropped without being completed"</span>);
+            }
+        }
+    }
+    <span class="attr">#[cfg(all(stageleft_macro, not(stageleft_macro)))]
     </span><span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, S: CycleComplete&lt;<span class="lifetime">'a</span>, ForwardRefMarker&gt;&gt; ForwardRef&lt;<span class="lifetime">'a</span>, S&gt; {
-        <span class="kw">pub fn </span>complete(<span class="self">self</span>, stream: S) {
-            <span class="kw">let </span>ident = <span class="self">self</span>.ident;
-            S::complete(stream, ident, <span class="self">self</span>.expected_location)
+        <span class="kw">pub fn </span>complete(<span class="kw-2">mut </span><span class="self">self</span>, stream: S) {
+            <span class="self">self</span>.completed = <span class="bool-val">true</span>;
+            <span class="kw">let </span>ident = <span class="self">self</span>.ident.clone();
+            S::complete(stream, ident, <span class="self">self</span>.expected_location.clone())
         }
     }
     <span class="kw">pub use </span><span class="kw">crate</span>::cycle::TickCycle;
     <span class="attr">#[cfg(all(stageleft_macro, not(stageleft_macro)))]
+    </span><span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, S: CycleComplete&lt;<span class="lifetime">'a</span>, TickCycleMarker&gt; + DeferTick&gt; Drop
+    <span class="kw">for </span>TickCycle&lt;<span class="lifetime">'a</span>, S&gt; {
+        <span class="kw">fn </span>drop(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+            <span class="kw">if </span>!<span class="self">self</span>.completed {
+                <span class="macro">panic!</span>(<span class="string">"TickCycle dropped without being completed"</span>);
+            }
+        }
+    }
+    <span class="attr">#[cfg(all(stageleft_macro, not(stageleft_macro)))]
     </span><span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, S: CycleComplete&lt;<span class="lifetime">'a</span>, TickCycleMarker&gt; + DeferTick&gt; TickCycle&lt;<span class="lifetime">'a</span>, S&gt; {
-        <span class="kw">pub fn </span>complete_next_tick(<span class="self">self</span>, stream: S) {
-            <span class="kw">let </span>ident = <span class="self">self</span>.ident;
-            S::complete(stream.defer_tick(), ident, <span class="self">self</span>.expected_location)
+        <span class="kw">pub fn </span>complete_next_tick(<span class="kw-2">mut </span><span class="self">self</span>, stream: S) {
+            <span class="self">self</span>.completed = <span class="bool-val">true</span>;
+            <span class="kw">let </span>ident = <span class="self">self</span>.ident.clone();
+            S::complete(stream.defer_tick(), ident, <span class="self">self</span>.expected_location.clone())
         }
     }
 }
@@ -15948,13 +15994,13 @@
     </span><span class="kw">pub mod </span>built {
         <span class="kw">pub use </span>std::collections::{BTreeMap, HashMap};
         <span class="kw">pub use </span>std::marker::PhantomData;
-        <span class="kw">pub use </span>dfir_lang::graph::{eliminate_extra_unions_tees, DfirGraph};
+        <span class="kw">pub use </span>dfir_lang::graph::{DfirGraph, eliminate_extra_unions_tees};
         <span class="kw">pub use </span><span class="kw">super</span>::compiled::CompiledFlow;
         <span class="kw">pub use </span><span class="kw">super</span>::deploy::{DeployFlow, DeployResult};
         <span class="kw">pub use </span><span class="kw">crate</span>::__staged::deploy::{
             ClusterSpec, Deploy, ExternalSpec, IntoProcessSpec, LocalDeploy,
         };
-        <span class="kw">pub use </span><span class="kw">crate</span>::__staged::ir::{emit, HydroLeaf};
+        <span class="kw">pub use </span><span class="kw">crate</span>::__staged::ir::{HydroLeaf, emit};
         <span class="kw">pub use </span><span class="kw">crate</span>::__staged::location::{Cluster, ExternalProcess, Process};
         <span class="kw">pub use </span><span class="kw">crate</span>::__staged::staging_util::Invariant;
         <span class="kw">pub use </span><span class="kw">crate</span>::builder::built::BuiltFlow;
@@ -16101,12 +16147,12 @@
     </span><span class="kw">pub mod </span>compiled {
         <span class="kw">pub use </span>std::collections::BTreeMap;
         <span class="kw">pub use </span>std::marker::PhantomData;
-        <span class="kw">pub use </span>dfir_lang::graph::{partition_graph, DfirGraph};
+        <span class="kw">pub use </span>dfir_lang::graph::{DfirGraph, partition_graph};
         <span class="kw">pub use </span>dfir_rs::scheduled::graph::Dfir;
         <span class="kw">pub use </span>proc_macro2::TokenStream;
         <span class="kw">pub use </span>quote::quote;
-        <span class="kw">pub use </span>stageleft::runtime_support::FreeVariableWithContext;
         <span class="kw">pub use </span>stageleft::QuotedWithContext;
+        <span class="kw">pub use </span>stageleft::runtime_support::FreeVariableWithContext;
         <span class="kw">pub use </span><span class="kw">crate</span>::__staged::staging_util::Invariant;
         <span class="kw">pub use </span><span class="kw">crate</span>::builder::compiled::CompiledFlow;
         <span class="attr">#[cfg(all(stageleft_macro, not(stageleft_macro)))]
@@ -16241,8 +16287,8 @@
         <span class="kw">pub use </span>dfir_rs::bytes::Bytes;
         <span class="kw">pub use </span>dfir_rs::futures::{Sink, Stream};
         <span class="kw">pub use </span>proc_macro2::Span;
-        <span class="kw">pub use </span>serde::de::DeserializeOwned;
         <span class="kw">pub use </span>serde::Serialize;
+        <span class="kw">pub use </span>serde::de::DeserializeOwned;
         <span class="kw">pub use </span>stageleft::QuotedWithContext;
         <span class="kw">pub use </span><span class="kw">super</span>::built::build_inner;
         <span class="kw">pub use </span><span class="kw">super</span>::compiled::CompiledFlow;
@@ -16778,9 +16824,9 @@
     <span class="attr">#[cfg(feature = <span class="string">"build"</span>)]
     </span><span class="kw">pub use </span>proc_macro2::Span;
     <span class="kw">pub use </span>proc_macro2::TokenStream;
+    <span class="kw">pub use </span>quote::ToTokens;
     <span class="attr">#[cfg(feature = <span class="string">"build"</span>)]
     </span><span class="kw">pub use </span>quote::quote;
-    <span class="kw">pub use </span>quote::ToTokens;
     <span class="attr">#[cfg(feature = <span class="string">"build"</span>)]
     </span><span class="kw">pub use </span>syn::parse_quote;
     <span class="attr">#[cfg(feature = <span class="string">"build"</span>)]
@@ -19076,8 +19122,8 @@
         <span class="kw">use </span>std::collections::HashMap;
         <span class="kw">use </span>tokio::sync::mpsc::UnboundedReceiver;
         <span class="kw">use </span><span class="kw">crate</span>::builder::deploy::DeployResult;
-        <span class="kw">use </span><span class="kw">crate</span>::deploy::deploy_graph::DeployCrateWrapper;
         <span class="kw">use </span><span class="kw">crate</span>::deploy::HydroDeploy;
+        <span class="kw">use </span><span class="kw">crate</span>::deploy::deploy_graph::DeployCrateWrapper;
         <span class="kw">use </span><span class="kw">crate</span>::ir::HydroLeaf;
         <span class="kw">use </span><span class="kw">crate</span>::location::LocationId;
         <span class="kw">use </span><span class="kw">crate</span>::rewrites::analyze_counter::{inject_count, parse_counter_usage};
@@ -19642,7 +19688,7 @@
     <span class="kw">pub mod </span>properties {
         <span class="kw">pub use </span>std::collections::HashSet;
         <span class="kw">pub use </span>stageleft::<span class="kw-2">*</span>;
-        <span class="kw">pub use </span><span class="kw">crate</span>::__staged::ir::{transform_bottom_up, HydroLeaf, HydroNode};
+        <span class="kw">pub use </span><span class="kw">crate</span>::__staged::ir::{HydroLeaf, HydroNode, transform_bottom_up};
         <span class="kw">pub use </span><span class="kw">crate</span>::rewrites::properties::PropertyDatabase;
         <span class="doccomment">/// Allows us to convert the dfir datatype for folds to a binary operation for the algebra
         /// property tests.
@@ -19697,9 +19743,9 @@
         <span class="attr">#[cfg(all(stageleft_macro, not(stageleft_macro)))]
         </span><span class="kw">pub mod </span>tests {
             <span class="kw">pub use super</span>::<span class="kw-2">*</span>;
+            <span class="kw">pub use </span><span class="kw">crate</span>::__staged::FlowBuilder;
             <span class="kw">pub use </span><span class="kw">crate</span>::__staged::deploy::SingleProcessGraph;
             <span class="kw">pub use </span><span class="kw">crate</span>::__staged::location::Location;
-            <span class="kw">pub use </span><span class="kw">crate</span>::__staged::FlowBuilder;
             <span class="attr">#[cfg(all(stageleft_macro, not(stageleft_macro)))]
             #[test]
             </span><span class="kw">pub fn </span>test_property_database() {
@@ -19774,10 +19820,10 @@
 <span class="attr">#[cfg(feature = <span class="string">"deploy"</span>)]
 </span><span class="kw">pub mod </span>test_util {
     <span class="kw">pub use </span>std::future::Future;
-    <span class="kw">pub use </span>std::panic::{catch_unwind, AssertUnwindSafe};
+    <span class="kw">pub use </span>std::panic::{AssertUnwindSafe, catch_unwind};
     <span class="kw">pub use </span>std::pin::Pin;
-    <span class="kw">pub use </span>serde::de::DeserializeOwned;
     <span class="kw">pub use </span>serde::Serialize;
+    <span class="kw">pub use </span>serde::de::DeserializeOwned;
     <span class="kw">pub use </span><span class="kw">crate</span>::__staged::{FlowBuilder, Process, Stream, Unbounded};
     <span class="kw">pub async fn </span>multi_location_test&lt;
         <span class="lifetime">'a</span>,
